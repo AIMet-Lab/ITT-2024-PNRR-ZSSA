@@ -207,7 +207,7 @@ def sentiment_analysis(datasets_config: pandas.DataFrame, models_config: pandas.
                          "CORRECT,"
                          "CORRECT_POSITIVE,"
                          "CORRECT_NEUTRAL,"
-                         "CORRECT_NEGATIVE\n")
+                         "CORRECT_NEGATIVE")
 
     stream_logger.info("Executing Sentiment Analysis...")
 
@@ -292,6 +292,6 @@ def sentiment_analysis(datasets_config: pandas.DataFrame, models_config: pandas.
                              f"{correct_positive + correct_neutral + correct_negative},"
                              f"{correct_positive},"
                              f"{correct_neutral},"
-                             f"{correct_negative}\n")
+                             f"{correct_negative}")
 
     return
