@@ -1,0 +1,10 @@
+ID,LINK
+M1,MoritzLaurer/deberta-v3-large-zeroshot-v1
+M2,MoritzLaurer/deberta-v3-base-zeroshot-v1
+M3,MoritzLaurer/DeBERTa-v3-xsmall-mnli-fever-anli-ling-binary
+M4,facebook/bart-large-mnli
+M5,cross-encoder/nli-MiniLM2-L6-H768
+M6,cross-encoder/nli-deberta-v3-large
+M7,cross-encoder/nli-deberta-v3-xsmall
+M8,cross-encoder/nli-deberta-v3-small
+M9,cross-encoder/nli-deberta-v3-base

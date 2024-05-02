@@ -1,0 +1,7 @@
+DATASET_ID,KEYWORDS_ID,KEY1,KEY2,KEY3,KEY4,KEY5
+castles,expert,tour,history,panorama,staff,food
+castles,cloud,tour,history,view,garden,price
+restaurants,expert,price,staff,clean,comfortable,location
+restaurants,cloud,price,service,pizza,meat,breakfast
+hotels,expert,price,staff,location,food,ambience
+hotels,cloud,price,staff,location,breakfast,clean

@@ -1,0 +1,4 @@
+ID,PATH
+castles,data/castles/castle_user_reviews.csv
+restaurants,data/restaurants/reviews.csv
+hotels,data/hotels/Datafiniti_Hotel_Reviews_Jun19.csv
