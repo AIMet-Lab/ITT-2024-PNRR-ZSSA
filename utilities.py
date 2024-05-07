@@ -85,6 +85,17 @@ def get_loggers(filepath: str):
     return stream_logger, file_logger
 
 
+def get_stream_logger():
+
+    stream_logger = logging.getLogger("Log Stream")
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setLevel(logging.INFO)
+    stream_logger.addHandler(stream_handler)
+    stream_logger.setLevel(logging.INFO)
+
+    return stream_logger
+
+
 def get_output_subfolders(output_folder: str) -> tuple:
 
     if not os.path.exists(output_folder):
@@ -211,13 +222,11 @@ def sentiment_analysis(datasets_config: pandas.DataFrame, models_config: pandas.
 
     stream_logger.info("Executing Sentiment Analysis...")
 
-    dataframes = [get_dataframe(dataset_ids[i], dataset_paths[i]) for i in range(len(dataset_ids))]
-
-    for df_index in range(len(dataframes)):
+    for df_index in range(len(dataset_ids)):
 
         dataset_id = dataset_ids[df_index]
+        df = get_dataframe(dataset_ids[df_index], dataset_paths[df_index])
 
-        df = dataframes[df_index]
         df['sentiment'] = df.apply(get_sentiment_given_score, axis="columns")
 
         if not use_neutral:
@@ -295,3 +304,83 @@ def sentiment_analysis(datasets_config: pandas.DataFrame, models_config: pandas.
                              f"{correct_negative}")
 
     return
+
+
+def keywords_extraction(datasets_config: pandas.DataFrame, models_config: pandas.DataFrame,
+                        keywords_config: pandas.DataFrame, keyword_folder: str, verbose: bool):
+
+    dataset_ids = datasets_config["ID"].tolist()
+    dataset_paths = datasets_config["PATH"].tolist()
+
+    model_ids = models_config["ID"].tolist()
+    model_links = models_config["LINK"].tolist()
+
+    stream_logger = get_stream_logger()
+    stream_logger.info("Executing Keyword Extraction...")
+
+    for df_index in range(len(dataset_ids)):
+
+        dataset_id = dataset_ids[df_index]
+        df = get_dataframe(dataset_ids[df_index], dataset_paths[df_index])
+
+        # We select the subset of the keywords_config dataframe relevant for the dataset at hand.
+        key_data_config = keywords_config[keywords_config['DATASET_ID'] == dataset_id]
+        # And we extract the keywords_ids.
+        keywords_ids = key_data_config['KEYWORDS_ID'].tolist()
+
+        for keywords_id in keywords_ids:
+
+            # We select the subset of the kewords_config dataframe relevant for the keyword_id at hand.
+            keys_df = key_data_config[key_data_config['KEYWORDS_ID'] == keywords_id]
+            # We drop the columns which do not contain keywords (we do this since in principle we could have more than
+            # five keywords).
+            keys_df = keys_df.drop(['DATASET_ID', 'KEYWORDS_ID'], axis=1)
+            # We extract the list of keywords assuming that the selection by DATASEt_ID and KEYWORDS_ID has given us a
+            # dataframe with a single row.
+            keywords = keys_df.values.squeeze().tolist()
+
+            for model_index in range(len(model_ids)):
+
+                model_id = model_ids[model_index]
+                model_link = model_links[model_index]
+
+                results_file_path = f"{keyword_folder}{dataset_id}_{keywords_id}_{model_id}.csv"
+
+                stream_logger.info(f"Computing Results for Dataset: {dataset_id}, "
+                                   f"Keywords ID: {keywords_id}, Model: {model_link}")
+
+                classifier = transformers.pipeline("zero-shot-classification", model=model_link, use_fast=False)
+
+                results_dict = {
+                    'text': [],
+                    'time': []
+                }
+                for keyword in keywords:
+                    results_dict[keyword] = []
+
+                sample_counter = 0
+                for _, sample in df.iterrows():
+
+                    if verbose and sample_counter % 100 == 0:
+                        stream_logger.info(f"Computing Sample {sample_counter}...")
+                    sample_counter += 1
+
+                    sequence_to_classify = sample['text']
+
+                    start = time.perf_counter()
+                    output = classifier(sequence_to_classify, keywords, multi_label=True)
+                    end = time.perf_counter()
+
+                    results_dict['text'].append(sequence_to_classify)
+                    results_dict['time'].append(end - start)
+
+                    for i in range(len(output['labels'])):
+                        results_dict[output['labels'][i]].append(output['scores'][i])
+
+                results_df = pandas.DataFrame(results_dict)
+                results_df.to_csv(results_file_path, index=False)
+
+    return
+
+
+

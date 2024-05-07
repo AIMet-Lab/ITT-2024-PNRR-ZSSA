@@ -49,7 +49,8 @@ if __name__ == "__main__":
     if do_data_analysis:
         utilities.data_analysis(datasets_config, graphs_folder, images_format)
 
-    utilities.sentiment_analysis(datasets_config, models_config, use_neutral, sentiment_folder, logs_folder, verbose)
+    # utilities.sentiment_analysis(datasets_config, models_config, use_neutral, sentiment_folder, logs_folder, verbose)
+    utilities.keywords_extraction(datasets_config, models_config, keywords_config, keyword_folder, verbose)
 
 
 
