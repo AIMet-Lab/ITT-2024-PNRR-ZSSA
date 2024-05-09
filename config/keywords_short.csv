@@ -1,0 +1,3 @@
+DATASET_ID,KEYWORDS_ID,KEY1,KEY2,KEY3,KEY4,KEY5
+trip_hotels,expert,price,staff,location,food,ambience
+trip_hotels,cloud,room,restaurant,beach,breakfast,pool
