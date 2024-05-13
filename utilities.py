@@ -507,6 +507,3 @@ def analyse_key_ext_results(keywords_config: pandas.DataFrame, keyword_folder: s
             make_results_hist(median_df, iqr_df, keywords, res_hist_save_path)
 
     return
-
-def temp():
-    return
