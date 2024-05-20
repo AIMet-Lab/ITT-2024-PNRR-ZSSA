@@ -131,7 +131,7 @@ def get_output_subfolders(output_folder: str) -> tuple:
     return sentiment_folder, keyword_folder, graphs_folder, logs_folder
 
 
-def make_wordcloud(dataset_id: str, dataset_path: str, save_path: str, max_n_words=50, colormap='cividis'):
+def make_wordcloud(dataset_id: str, dataset_path: str, save_path: str, max_n_words=50, colormap='viridis'):
 
     df = get_dataframe(dataset_id, dataset_path)
 
@@ -192,7 +192,7 @@ def make_dataset_hist_single(dataset_id: str, dataset_path: str, save_path: str)
     plt.figure(tight_layout=True)
 
     df = get_dataframe(dataset_id, dataset_path)
-    counts, edges, bars = plt.hist(df['score'], color="crimson", bins=[1, 2, 3, 4, 5, 6], align='left',
+    counts, edges, bars = plt.hist(df['score'], color="forestgreen", bins=[1, 2, 3, 4, 5, 6], align='left',
                                    rwidth=0.5)
 
     plt.xticks([1, 2, 3, 4, 5])
@@ -205,6 +205,7 @@ def make_dataset_hist_single(dataset_id: str, dataset_path: str, save_path: str)
 
     plt.savefig(save_path)
     plt.close()
+
 
 def make_results_hist(median_df: pandas.DataFrame, iqr_df: pandas.DataFrame, keywords: list, save_path: str):
 
